@@ -397,4 +397,8 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
+# zip file (large datasets)
+*.zip
+*.7z
+
 # End of https://www.toptal.com/developers/gitignore/api/opencv,c++,visualstudio
