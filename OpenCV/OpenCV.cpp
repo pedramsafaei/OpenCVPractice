@@ -19,9 +19,41 @@
 
 int main()
 {
-  roadDetection();
+  //roadDetection(); // one frame
+  cv::Mat canny_image, triangle_image, line_image, combo_image;
 
-  cv::waitKey(0);          // Wait for any keystroke in the window
+  cv::VideoCapture cap("../data/Road/test2.mp4");
+  if (!cap.isOpened()) {
+    std::cout << "Error opening the video stream!" << std::endl;
+    return -1;
+  }
+  while (true) {
+    cv::Mat frame;
+    cap >> frame;
+
+    if (frame.empty()) {
+      break;
+    }
+    // do the detection
+    canny_image = CannyEdge(frame);
+    triangle_image = regionOfInterest(canny_image);
+    //int rho = 2;
+    //double theta = CV_PI / 180;
+    std::vector<cv::Vec4i> lines;
+    cv::HoughLinesP(triangle_image, lines, 1, 2 * CV_PI / 180, 100, 40, 5);
+    //line_image = displayLines(frame, lines);
+    combo_image = displayLines(frame, lines, true);
+
+    createWindow(combo_image, "Test1");
+
+    char exit = (char)cv::waitKey(25);
+    if (exit == 27) {
+      break;
+    }
+  }
+
+  //cv::waitKey(0);          // Wait for any keystroke in the window
+  cap.release();
   cv::destroyAllWindows(); //destroy all opened windows
 
   return 0;
